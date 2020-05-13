@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no'>
+    <script src="./JSBridge.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+</head>
+<body>
+	<script>
+        // Temporary for evaluation purposes
+        var dataObj = {
+            entity = "Account",
+            field = "dealprogress",
+            optionSet = [ {id: 1, text: "Contact lead", desc: "bkajksjfhjkhs", state: 2}, {id: 2, text: "Show what we have", desc: "bkajksjfhjkhs dfgdfg fg dfg dfg. Ljkdjfks akslfd.", state: 1},
+            {id: 3, text: "Create offer", desc: "bkajksjfhjkhs", state: 0},{id: 4, text: "Sign the deal", desc: "bkajksjfhjkhs asdasd asd asd asd asdasdasdgf ", state: 0}]
+        }
+        
+        function init(){
+            
+        }
+
+        function loadData(){
+            // Request WF configuration from JS
+            return dataObj;
+        }
+
+        function arrowClicked(){
+            alert("move");
+        }
+    </script>
+    <div class="processContainer">
+        <!--div class="processArrow" onclick="arrowClicked()">
+
+        </div>
+        <div class="processArrow" onclick="arrowClicked()">
+    
+        </div>
+        <div class="processArrow" onclick="arrowClicked()">
+    
+        </div-->
+        <div class="processArrowContainer completed" onclick="arrowClicked()">
+            <div class="arrow center completed"></div>
+            <div class="arrow right completed"></div>
+        </div>
+        <div class="processArrowContainer" onclick="arrowClicked()">
+            <div class="arrow left active"></div>
+            <div class="arrow center active"></div>
+            <div class="arrow right active"></div>
+        </div>
+        <div class="processArrowContainer" onclick="arrowClicked()">
+            <div class="arrow left"></div>
+            <div class="arrow center"></div>
+            <div class="arrow right"></div>
+        </div>
+        <div class="processArrowContainer" onclick="arrowClicked()">
+            <div class="arrow left"></div>
+            <div class="arrow center"></div>
+        </div>
+    </div>
+    
+</body>

@@ -1,0 +1,102 @@
+.processContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.processArrow:hover {
+  opacity: 50%;
+}
+
+.processArrowContainer {
+  display: inline-flex;
+  flex: 0 1 auto;
+  height: 50%;
+}
+.processArrowContainer:hover {
+  opacity: 50%;
+}
+
+.arrow {
+  display: inline-flex;
+  flex: 0 1 auto;
+  position: relative;
+  /*.processArrow{
+      background-color: dodgerblue;
+      border-radius: 2px;
+      height: 100px;         
+      width: 100px;
+      display: inline-flex;
+      position: relative;
+      margin: 25px;
+
+  }
+  .processArrow::after {
+      color: dodgerblue;
+      border-left: 50px solid;
+      border-top: 50px solid transparent;
+      border-bottom: 50px solid transparent;
+      display: inline-block;
+      content: '';
+      position: absolute;
+      right: -50px;
+  }
+
+  .processArrow2::before {
+      color: white;
+      border-left: 50px solid;
+      border-top: 50px solid transparent;
+      border-bottom: 50px solid transparent;
+      display: inline-block;
+      content: '';
+      position: absolute;
+
+  }
+
+  .processArrow:active{
+      background-color: greenyellow;
+      color: greenyellow;
+  }*/
+}
+.arrow.left {
+  width: 0;
+  height: 0;
+  border-top: 50px solid dodgerblue;
+  border-bottom: 50px solid dodgerblue;
+  border-left: 50px solid transparent;
+}
+.arrow.left.completed {
+  border-top: 50px solid #90EE90;
+  border-bottom: 50px solid #90EE90;
+}
+.arrow.left.active {
+  border-top: 50px solid orange;
+  border-bottom: 50px solid orange;
+}
+.arrow.center {
+  width: 100px;
+  background: dodgerblue;
+  min-height: 100px;
+  left: -4px;
+}
+.arrow.center.completed {
+  background: #90EE90;
+}
+.arrow.center.active {
+  background: orange;
+}
+.arrow.right {
+  height: 0;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent;
+  border-left: 50px solid dodgerblue;
+  position: relative;
+  left: -8px;
+}
+.arrow.right.completed {
+  border-left: 50px solid #90EE90;
+}
+.arrow.right.active {
+  border-left: 50px solid orange;
+}
+
+/*# sourceMappingURL=main.css.map */

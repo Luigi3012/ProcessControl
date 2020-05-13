@@ -1,0 +1,108 @@
+$base-color: dodgerblue;
+$finished-color: #90EE90;
+$active-color: orange;
+
+.processContainer{
+    display: flex;
+    flex-direction: row;
+}
+
+
+.processArrow:hover{
+    opacity: 50%;
+}
+
+.processArrowContainer{
+    display: inline-flex;
+    flex: 0 1 auto;
+    height: 50%;
+    &:hover{
+        opacity: 50%;
+    }
+}
+
+.arrow{
+    display: inline-flex;
+    flex: 0 1 auto;
+    position:relative;
+    
+    &.left{
+        width: 0; 
+        height: 0; 
+        border-top: 50px solid dodgerblue;
+        border-bottom: 50px solid dodgerblue;
+        border-left: 50px solid transparent;
+        &.completed{
+            border-top: 50px solid $finished-color;
+            border-bottom: 50px solid $finished-color;
+        }
+        &.active{
+            border-top: 50px solid $active-color;
+            border-bottom: 50px solid $active-color;
+        }
+    }
+    &.center{
+        width:100px;
+        background:dodgerblue;
+        min-height:100px;
+        left: -4px;
+        &.completed{
+            background: $finished-color;
+        }
+        &.active{
+            background: $active-color;
+        }
+    }
+    &.right{
+        height: 0; 
+        border-top: 50px solid transparent;
+        border-bottom: 50px solid transparent;
+        border-left: 50px solid dodgerblue;
+        position:relative;
+        left: -8px;
+        &.completed{
+            border-left: 50px solid $finished-color;
+        }
+        &.active{
+            border-left: 50px solid $active-color;
+        }
+    }
+
+    
+    /*.processArrow{
+    background-color: dodgerblue;
+    border-radius: 2px;
+    height: 100px;         
+    width: 100px;
+    display: inline-flex;
+    position: relative;
+    margin: 25px;
+
+}
+.processArrow::after {
+    color: dodgerblue;
+    border-left: 50px solid;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    display: inline-block;
+    content: '';
+    position: absolute;
+    right: -50px;
+}
+
+.processArrow2::before {
+    color: white;
+    border-left: 50px solid;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    display: inline-block;
+    content: '';
+    position: absolute;
+   
+}
+
+.processArrow:active{
+    background-color: greenyellow;
+    color: greenyellow;
+}*/
+}
