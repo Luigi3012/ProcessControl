@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name='viewport' content='initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no'>
     <script src="./JSBridge.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <link rel="stylesheet" type="text/css" href="processControl.css">
 </head>
 <body onload="init()">
 	<script>
@@ -19,9 +19,13 @@
         }
         
         function init(){
-            var processContainer = document.getElementById("processContainer");
+            /*var processContainer = document.getElementById("processContainer");
             for(var field of dataObj.optionSet){
                 processContainer.appendChild(htmlToElements(createArrow(field.text, field.id)))
+            }*/
+            var stepContainer = document.getElementById("stepContainer");
+            for(var field of dataObj.optionSet){
+                stepContainer.appendChild(htmlToElements(createArrow2(field.text, field.id, field.desc)))
             }
         }
 
@@ -31,6 +35,16 @@
             + "<div class=\"arrow center\">" + name + "</div>"
             + "<div class=\"arrow right\"></div>"
             + "</div>";
+            return arrowHtml;
+        }
+
+        function createArrow2(name, value, description){
+            var arrowHtml = "<li id="+ value +" class=\"future\" onclick=\"arrowClicked(this.id)\">"
+            + "<span>"
+            + "<strong>" +name+ "</strong>"
+            + description +
+            +"</span><i></i>"
+            +"</li>";
             return arrowHtml;
         }
 
@@ -52,9 +66,13 @@
 
         function arrowClicked(elementId){
             console.log(event);
-
             // if rule validation passed
-            setArrowCssClass(elementId);
+            setArrowCssClass2(elementId,"active");
+        }
+
+        function setArrowCssClass2(elementId, state){
+            var element = document.getElementById(elementId);
+            element.className = state;            
         }
 
         function setArrowCssClass(elementId){
@@ -78,5 +96,7 @@
     </script>
     <div id="processContainer" class="processContainer">
     </div>
-    
+    <ul id="stepContainer" class="steps"></ul>
+      
+      
 </body>
