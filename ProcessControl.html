@@ -10,41 +10,31 @@
 </head>
 <body onload="init()">
 	<script>
-        // Temporary for evaluation purposes
-        var dataObj = {
-            entity: "Account",
-            field: "dealprogress",
-            optionSet: [ {id: 1, text: "Contact lead", desc: "bkajksjfhjkhs", state: 2}, {id: 2, text: "Show what we have", desc: "bkajksjfhjkhs dfgdfg fg dfg dfg. Ljkdjfks akslfd.", state: 1},
-            {id: 3, text: "Create offer", desc: "bkajksjfhjkhs", state: 0},{id: 4, text: "Sign the deal", desc: "bkajksjfhjkhs asdasd asd asd asd asdasdasdgf ", state: 0}]
-        }
+        var activeState = "active";
+        var completedState = "completed";
+        var futureState = "future";
+        
+        var stepArray = [ {id: "1", text: "Contact lead", desc: "First description of this step.", state: 2}, {id: "2", text: "Show what we have", desc: "This will be cool feature.", state: 1},
+            {id: "3", text: "Create offer", desc: "", state: 0},{id: "4", text: "Sign the deal", desc: "Aaaaand finally, get ready to try it.", state: 0}]
         
         function init(){
-            /*var processContainer = document.getElementById("processContainer");
-            for(var field of dataObj.optionSet){
-                processContainer.appendChild(htmlToElements(createArrow(field.text, field.id)))
-            }*/
+            var urlParams = new URLSearchParams(window.location.search);
+            var processControlName = urlParams.get('name');
+            // Use this to request configuration from app via jsBridge
             var stepContainer = document.getElementById("stepContainer");
-            for(var field of dataObj.optionSet){
+            for(var field of stepArray){
                 stepContainer.appendChild(htmlToElements(createArrow2(field.text, field.id, field.desc)))
             }
         }
 
-        function createArrow(name, value){
-            var arrowHtml = "<div id="+ value + " class=\"processArrowContainer\" onclick=\"arrowClicked(this.id)\">"
-            + "<div class=\"arrow left\"></div>"
-            + "<div class=\"arrow center\">" + name + "</div>"
-            + "<div class=\"arrow right\"></div>"
-            + "</div>";
-            return arrowHtml;
-        }
 
         function createArrow2(name, value, description){
-            var arrowHtml = "<li id="+ value +" class=\"future\" onclick=\"arrowClicked(this.id)\">"
-            + "<span>"
-            + "<strong>" +name+ "</strong>"
-            + description +
-            +"</span><i></i>"
-            +"</li>";
+            var arrowHtml = "<li id="+ value +" class=\"future\" onclick=\"arrowClicked(this.id)\">" +
+            "<span>" +
+            "<strong>" + name + "</strong>" +
+            description +
+            "</span><i></i>" +
+            "</li>";
             return arrowHtml;
         }
 
@@ -66,8 +56,45 @@
 
         function arrowClicked(elementId){
             console.log(event);
-            // if rule validation passed
-            setArrowCssClass2(elementId,"active");
+            var element = document.getElementById(elementId);
+            var stateFromClass = element.className;
+            var step = stepArray.find(s => s.id === elementId);
+            if(step){
+                switch(stateFromClass) {
+                case activeState:
+                    setArrowCssClass(element, completedState);
+                    setPreviousElementsToState(stepArray.indexOf(step), completed);
+                    setNextElementsToState(stepArray.indexOf(step), futureState);
+                    break;
+                case completedState:
+                    setArrowCssClass(element, futureState);  // Reset state
+                    setPreviousElementsToState(stepArray.indexOf(step), completedState);
+                    break;
+                case futureState:                  
+                    setArrowCssClass(element, activeState);
+                    setPreviousElementsToState(stepArray.indexOf(step), completedState);
+                    setNextElementsToState(stepArray.indexOf(step), futureState);
+                    break;
+                } 
+            }
+        }
+
+        function setPreviousElementsToState(index, state){
+            for(var i = 0; i < index; i++){
+                var element = document.getElementById(stepArray[i].id);
+                setArrowCssClass(element, state);
+            }
+        }
+
+        function setNextElementsToState(index, state){
+            for(var i = index + 1; i < stepArray.length; i++){
+                var element = document.getElementById(stepArray[i].id);
+                setArrowCssClass(element, state);
+            }
+        }
+
+        function setArrowCssClass(element, state){
+            element.className = state;            
         }
 
         function setArrowCssClass2(elementId, state){
@@ -75,28 +102,8 @@
             element.className = state;            
         }
 
-        function setArrowCssClass(elementId){
-            var element = document.getElementById(elementId);
-            var state = "active";
-            if(element && element.classList.contains(state)){
-                element.classList.remove(state);
-                for(var node of element.childNodes){
-                    node.classList.remove(state);
-                }
-                state = "completed";                
-            }
-                
-            if(!element.classList.contains(state)){
-                element.classList.add(state);
-                for(var node of element.childNodes){
-                    node.classList.add(state);
-                }
-            }
-        }
     </script>
     <div id="processContainer" class="processContainer">
     </div>
     <ul id="stepContainer" class="steps"></ul>
-      
-      
 </body>

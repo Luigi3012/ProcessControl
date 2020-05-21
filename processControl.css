@@ -107,6 +107,7 @@
   line-height: 1;
   margin: 30px auto;
   border-radius: 3px;
+  text-overflow: ellipsis;
 }
 
 .steps strong {
