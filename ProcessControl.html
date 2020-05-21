@@ -8,18 +8,41 @@
     <script src="./JSBridge.js"></script>
     <link rel="stylesheet" type="text/css" href="styles/main.css">
 </head>
-<body>
+<body onload="init()">
 	<script>
         // Temporary for evaluation purposes
         var dataObj = {
-            entity = "Account",
-            field = "dealprogress",
-            optionSet = [ {id: 1, text: "Contact lead", desc: "bkajksjfhjkhs", state: 2}, {id: 2, text: "Show what we have", desc: "bkajksjfhjkhs dfgdfg fg dfg dfg. Ljkdjfks akslfd.", state: 1},
+            entity: "Account",
+            field: "dealprogress",
+            optionSet: [ {id: 1, text: "Contact lead", desc: "bkajksjfhjkhs", state: 2}, {id: 2, text: "Show what we have", desc: "bkajksjfhjkhs dfgdfg fg dfg dfg. Ljkdjfks akslfd.", state: 1},
             {id: 3, text: "Create offer", desc: "bkajksjfhjkhs", state: 0},{id: 4, text: "Sign the deal", desc: "bkajksjfhjkhs asdasd asd asd asd asdasdasdgf ", state: 0}]
         }
         
         function init(){
-            
+            var processContainer = document.getElementById("processContainer");
+            for(var field of dataObj.optionSet){
+                processContainer.appendChild(htmlToElements(createArrow(field.text, field.id)))
+            }
+        }
+
+        function createArrow(name, value){
+            var arrowHtml = "<div id="+ value + " class=\"processArrowContainer\" onclick=\"arrowClicked(this.id)\">"
+            + "<div class=\"arrow left\"></div>"
+            + "<div class=\"arrow center\">" + name + "</div>"
+            + "<div class=\"arrow right\"></div>"
+            + "</div>";
+            return arrowHtml;
+        }
+
+        /**
+        * @param {String} HTML representing any number of sibling elements
+        * @return {NodeList} 
+        */
+        function htmlToElements(html) {
+            var template = document.createElement('template');
+            html = html.trim();
+            template.innerHTML = html;
+            return template.content.firstChild;
         }
 
         function loadData(){
@@ -27,38 +50,33 @@
             return dataObj;
         }
 
-        function arrowClicked(){
-            alert("move");
+        function arrowClicked(elementId){
+            console.log(event);
+
+            // if rule validation passed
+            setArrowCssClass(elementId);
+        }
+
+        function setArrowCssClass(elementId){
+            var element = document.getElementById(elementId);
+            var state = "active";
+            if(element && element.classList.contains(state)){
+                element.classList.remove(state);
+                for(var node of element.childNodes){
+                    node.classList.remove(state);
+                }
+                state = "completed";                
+            }
+                
+            if(!element.classList.contains(state)){
+                element.classList.add(state);
+                for(var node of element.childNodes){
+                    node.classList.add(state);
+                }
+            }
         }
     </script>
-    <div class="processContainer">
-        <!--div class="processArrow" onclick="arrowClicked()">
-
-        </div>
-        <div class="processArrow" onclick="arrowClicked()">
-    
-        </div>
-        <div class="processArrow" onclick="arrowClicked()">
-    
-        </div-->
-        <div class="processArrowContainer completed" onclick="arrowClicked()">
-            <div class="arrow center completed"></div>
-            <div class="arrow right completed"></div>
-        </div>
-        <div class="processArrowContainer" onclick="arrowClicked()">
-            <div class="arrow left active"></div>
-            <div class="arrow center active"></div>
-            <div class="arrow right active"></div>
-        </div>
-        <div class="processArrowContainer" onclick="arrowClicked()">
-            <div class="arrow left"></div>
-            <div class="arrow center"></div>
-            <div class="arrow right"></div>
-        </div>
-        <div class="processArrowContainer" onclick="arrowClicked()">
-            <div class="arrow left"></div>
-            <div class="arrow center"></div>
-        </div>
+    <div id="processContainer" class="processContainer">
     </div>
     
 </body>
