@@ -13,36 +13,29 @@
         var activeState = "active";
         var completedState = "completed";
         var futureState = "future";
-        
-        var stepArray = [ {id: "1", text: "Contact lead", desc: "First description of this step.", state: 2}, {id: "2", text: "Show what we have", desc: "This will be cool feature.", state: 1},
-            {id: "3", text: "Create offer", desc: "", state: 0},{id: "4", text: "Sign the deal", desc: "Aaaaand finally, get ready to try it.", state: 0}]
+        var processControlConfiguration;
+        var stepArray;
         
         function init(){
             var urlParams = new URLSearchParams(window.location.search);
             var processControlName = urlParams.get('name');
-            MobileCRM.bridge.command("getProcessControlConfiguration", processControlName, setUpProcessArrows, failed, null);            
+            MobileCRM.bridge.command("getProcessControlConfiguration", processControlName, setUpProcessArrows, reportError, null);            
+        }
+
+        function reportError(error){
+            MobileCRM.bridge.alert(error);
         }
 
         function setUpProcessArrows(jsonConfig){
-            MobileCRM.bridge.alert(jsonConfig);
+            processControlConfiguration = jsonConfig;
+            stepArray = jsonConfig.steps;
             var stepContainer = document.getElementById("stepContainer");
-            for(var field of stepArray){
-                stepContainer.appendChild(htmlToElements(createArrow2(field.text, field.id, field.desc)))
+            for(var field of jsonConfig.steps){
+                let desc = field.description !== "undefined" ? field.description : "";
+                stepContainer.appendChild(htmlToElements(createArrow2(field.label, field.value, desc)))
             }
-        }
-
-        function setStepOnEntity(){
-            MobileCRM.UI.EntityForm.requestObject(
-                function (entityForm) {
-                    /// <param name="entityForm" type="MobileCRM.UI.EntityForm"/>
-                    var entityFields = entityForm.entity.properties;                
-                },
-                function (err) {
-                    MobileCRM.bridge.alert("An error occurred: " + err);
-                },
-                null
-            );       
-        }
+            loadCurrentStepFromEntity();
+        }   
 
         function createArrow2(name, value, description){
             var arrowHtml = "<li id="+ value +" class=\"future\" onclick=\"arrowClicked(this.id)\">" +
@@ -65,46 +58,70 @@
             return template.content.firstChild;
         }
 
-        function loadData(){
-            // Request WF configuration from JS
-            return dataObj;
-        }
-
-        function arrowClicked(elementId){
-            console.log(event);
+        function arrowClicked(elementId){ 
             var element = document.getElementById(elementId);
             var stateFromClass = element.className;
-            var step = stepArray.find(s => s.id === elementId);
+            var step = stepArray.find(s => s.value === elementId);         
             if(step){
+                var stepIndex = stepArray.indexOf(step); 
                 switch(stateFromClass) {
-                case activeState:
+                case activeState:                                     
                     setArrowCssClass(element, completedState);
-                    setPreviousElementsToState(stepArray.indexOf(step), completed);
-                    setNextElementsToState(stepArray.indexOf(step), futureState);
+                    setPreviousElementsToState(stepIndex, completed);
+                    setNextElementsToState(stepIndex, futureState);
                     break;
                 case completedState:
                     setArrowCssClass(element, futureState);  // Reset state
-                    setPreviousElementsToState(stepArray.indexOf(step), completedState);
+                    setPreviousElementsToState(stepIndex, completedState);
                     break;
-                case futureState:                  
+                case futureState:                
+                    setStepOnEntity(elementId);
                     setArrowCssClass(element, activeState);
-                    setPreviousElementsToState(stepArray.indexOf(step), completedState);
-                    setNextElementsToState(stepArray.indexOf(step), futureState);
+                    setPreviousElementsToState(stepIndex, completedState);
+                    setNextElementsToState(stepIndex, futureState);
                     break;
                 } 
             }
+            
+        }
+
+        function setStepOnEntity(stepValue){
+            MobileCRM.UI.EntityForm.requestObject(
+                function (entityForm) {
+                    entityForm.entity.properties[processControlConfiguration.field] = stepValue;
+                },
+                function (err) { MobileCRM.bridge.alert(err); }
+            );   
+        }
+
+        function loadCurrentStepFromEntity(){
+            MobileCRM.UI.EntityForm.requestObject(
+                function (entityForm) {
+                    var stepValue = entityForm.entity.properties[processControlConfiguration.field];
+                    var step = stepArray.find(s => s.value === stepValue + "");
+                    var element = document.getElementById(stepValue);              
+                    if(element){
+                        var stepIndex = stepArray.indexOf(step); 
+                        setArrowCssClass(element, activeState);
+                        setPreviousElementsToState(stepIndex, completedState);
+                        setNextElementsToState(stepIndex, futureState);
+                    }
+                    
+                },
+                function (err) { MobileCRM.bridge.alert(err); }
+            );   
         }
 
         function setPreviousElementsToState(index, state){
             for(var i = 0; i < index; i++){
-                var element = document.getElementById(stepArray[i].id);
+                var element = document.getElementById(stepArray[i].value);
                 setArrowCssClass(element, state);
             }
         }
 
         function setNextElementsToState(index, state){
             for(var i = index + 1; i < stepArray.length; i++){
-                var element = document.getElementById(stepArray[i].id);
+                var element = document.getElementById(stepArray[i].value);
                 setArrowCssClass(element, state);
             }
         }
@@ -119,7 +136,6 @@
         }
 
     </script>
-    <div id="processContainer" class="processContainer">
     </div>
     <ul id="stepContainer" class="steps"></ul>
 </body>
